@@ -5,5 +5,10 @@
 	"require": {
 		"php": "5.5.38",
 		"roave/security-advisories": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"Framework\\": "src/Engine/"
+		}
 	}
 }
