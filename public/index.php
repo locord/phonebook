@@ -1,6 +1,7 @@
 <?php
 
 use App\Action\IndexAction;
+use Engine\Http\ActionResolver;
 use Engine\Http\HtmlResponse;
 use Engine\Http\ResponseSender;
 use Engine\Http\Router\Exception\RequestNotMatchedException;
@@ -15,17 +16,18 @@ require 'vendor/autoload.php';
 $routes = new RouteCollection();
 $routes->get('home', '/', IndexAction::class);
 $router = new Router($routes);
+$resolver = new ActionResolver();
 
 ### Action
 $request = ServerRequest::fromGlobals();
+
 try {
     $result = $router->match($request);
     foreach ($result->getAttributes() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
-    /** @var callable $action */
     $handler  = $result->getHandler();
-    $action   = is_string($handler) ? new $handler() : $handler;
+    $action   = $resolver->resolve($handler);
     $response = $action($request);
 } catch (RequestNotMatchedException $e) {
     $response = new HtmlResponse('Undefined page', 404);
