@@ -1,6 +1,8 @@
 <?php
 
+use App\Action\CabinetAction;
 use App\Action\IndexAction;
+use App\Action\SignUpAction;
 use Engine\Http\ActionResolver;
 use Engine\Http\HtmlResponse;
 use Engine\Http\ResponseSender;
@@ -15,6 +17,8 @@ require 'vendor/autoload.php';
 ### Initialization
 $routes = new RouteCollection();
 $routes->get('home', '/', IndexAction::class);
+$routes->get('signup', '/signup', SignUpAction::class);
+
 $router = new Router($routes);
 $resolver = new ActionResolver();
 

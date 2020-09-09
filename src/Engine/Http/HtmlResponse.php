@@ -38,38 +38,11 @@ class HtmlResponse extends Response
             ));
         }
 
-        $resource = $this->setStream('php://temp', 'wb+');
+        $resource = StreamHelper::setStream('php://temp', 'wb+');
         $body = new Stream($resource);
         $body->write($html);
         $body->rewind();
 
         return $body;
     }
-
-    private function setStream($stream, $mode = 'r')
-    {
-        $error    = null;
-        $resource = $stream;
-
-        if (is_string($stream)) {
-            set_error_handler(function ($e) use (&$error) {
-                $error = $e;
-            }, E_WARNING);
-            $resource = fopen($stream, $mode);
-            restore_error_handler();
-        }
-
-        if ($error) {
-            throw new InvalidArgumentException('Invalid stream reference provided');
-        }
-
-        if (! is_resource($resource) || 'stream' !== get_resource_type($resource)) {
-            throw new InvalidArgumentException(
-                'Invalid stream provided; must be a string stream identifier or stream resource'
-            );
-        }
-
-        return $resource;
-    }
-
 }
