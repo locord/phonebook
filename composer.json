@@ -10,7 +10,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Engine\\": "src/Engine/"
+			"Engine\\": "src/Engine/",
+			"App\\": "src/App/"
 		}
 	},
 	"scripts": {
