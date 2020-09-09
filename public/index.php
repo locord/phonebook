@@ -1,5 +1,6 @@
 <?php
 
+use Engine\Http\HtmlResponse;
 use Engine\Http\ResponseSender;
 use Engine\Http\Router\Exception\RequestNotMatchedException;
 use Engine\Http\Router\RouteCollection;
@@ -15,7 +16,7 @@ require 'vendor/autoload.php';
 $routes = new RouteCollection();
 $routes->get('home', '/', function (ServerRequestInterface $request) {
     $name = $request->getQueryParams()['name'] ?: 'Guest';
-    return new Response(200, [], 'Hello, ' . $name . '!');
+    return new HtmlResponse('Hello, ' . $name . '!');
 });
 $router = new Router($routes);
 
@@ -27,10 +28,11 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
     /** @var callable $action */
-    $action   = $result->getHandler();
+    $handler  = $result->getHandler();
+    $action   = is_string($handler) ? new $handler() : $handler;
     $response = $action($request);
 } catch (RequestNotMatchedException $e) {
-    $response = new Response(404, [], 'Undefined page');
+    $response = new HtmlResponse('Undefined page', 404);
 }
 
 ### Sending
