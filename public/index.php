@@ -1,23 +1,19 @@
 <?php
 
+use App\Action\IndexAction;
 use Engine\Http\HtmlResponse;
 use Engine\Http\ResponseSender;
 use Engine\Http\Router\Exception\RequestNotMatchedException;
 use Engine\Http\Router\RouteCollection;
 use Engine\Http\Router\Router;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Psr\Http\Message\ServerRequestInterface;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 ### Initialization
 $routes = new RouteCollection();
-$routes->get('home', '/', function (ServerRequestInterface $request) {
-    $name = $request->getQueryParams()['name'] ?: 'Guest';
-    return new HtmlResponse('Hello, ' . $name . '!');
-});
+$routes->get('home', '/', IndexAction::class);
 $router = new Router($routes);
 
 ### Action
