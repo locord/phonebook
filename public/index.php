@@ -1,22 +1,37 @@
 <?php
 
-use Framework\Http\ResponseSender;
+use Engine\Http\ResponseSender;
+use Engine\Http\Router\Exception\RequestNotMatchedException;
+use Engine\Http\Router\RouteCollection;
+use Engine\Http\Router\Router;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 ### Initialization
-$request = ServerRequest::fromGlobals();
+$routes = new RouteCollection();
+$routes->get('home', '/', function (ServerRequestInterface $request) {
+    $name = $request->getQueryParams()['name'] ?: 'Guest';
+    return new Response(200, [], 'Hello, ' . $name . '!');
+});
+$router = new Router($routes);
 
 ### Action
-$name = $request->getQueryParams()['name'] ?: 'Guest';
-
-### Response
-/** @var Response $response */
-$response = (new Response(200, [],'Hello, ' . $name . '!'))
-    ->withHeader('X-Developer', 'loco');
+$request = ServerRequest::fromGlobals();
+try {
+    $result = $router->match($request);
+    foreach ($result->getAttributes() as $attribute => $value) {
+        $request = $request->withAttribute($attribute, $value);
+    }
+    /** @var callable $action */
+    $action   = $result->getHandler();
+    $response = $action($request);
+} catch (RequestNotMatchedException $e) {
+    $response = new Response(404, [], 'Undefined page');
+}
 
 ### Sending
 $emitter = new ResponseSender();
