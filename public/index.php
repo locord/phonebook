@@ -1,10 +1,11 @@
 <?php
 
-use App\Action\CabinetAction;
 use App\Action\IndexAction;
 use App\Action\SignUpAction;
 use Engine\Http\ActionResolver;
 use Engine\Http\HtmlResponse;
+use Engine\Http\Middleware\NotFoundHandler;
+use Engine\Http\Pipeline\Pipeline;
 use Engine\Http\ResponseSender;
 use Engine\Http\Router\Exception\RequestNotMatchedException;
 use Engine\Http\Router\RouteCollection;
@@ -30,11 +31,16 @@ try {
     foreach ($result->getAttributes() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
-    $handler  = $result->getHandler();
-    $action   = $resolver->resolve($handler);
-    $response = $action($request);
+
+    $handlers = $result->getHandler();
+    $pipeline = new Pipeline();
+    foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
+        $pipeline->pipe($resolver->resolve($handler));
+    }
+    $response = $pipeline($request, new NotFoundHandler());
 } catch (RequestNotMatchedException $e) {
-    $response = new HtmlResponse('Undefined page', 404);
+    $handler = new NotFoundHandler();
+    $response = $handler($request);
 }
 
 ### Sending
