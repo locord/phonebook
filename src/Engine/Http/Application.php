@@ -21,7 +21,7 @@ class Application extends Pipeline
     {
         parent::__construct();
         $this->resolver = $resolver;
-        $this->default = $default;
+        $this->default  = $default;
     }
 
     public function pipe($middleware)

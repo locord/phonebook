@@ -21,7 +21,7 @@ $container->set(Application::class, function (Container $container) {
     );
 });
 $container->set(MiddlewareResolver::class, function (Container $container) {
-    return new MiddlewareResolver();
+    return new MiddlewareResolver($container);
 });
 $container->set(RouteMiddleware::class, function (Container $container) {
     return new RouteMiddleware($container->get(Router::class), $container->get(MiddlewareResolver::class));
@@ -32,10 +32,4 @@ $container->set(Router::class, function (Container $container) {
     $routes->get('home', '/', IndexAction::class);
     $routes->get('signup', '/signup', SignUpAction::class);
     return new Router($routes);
-});
-$container->set(ErrorMiddlewareHandler::class, function (Container $container) {
-    return new ErrorMiddlewareHandler();
-});
-$container->set(BodyParamsMiddleware::class, function (Container $container) {
-    return new BodyParamsMiddleware();
 });
