@@ -2,11 +2,11 @@
 
 use App\Action\IndexAction;
 use App\Action\SignUpAction;
+use Engine\Http\Application;
 use Engine\Http\Middleware\BodyParamsMiddleware;
+use Engine\Http\Middleware\ErrorMiddlewareHandler;
 use Engine\Http\MiddlewareResolver;
-use Engine\Http\HtmlResponse;
 use Engine\Http\Middleware\NotFoundHandler;
-use Engine\Http\Pipeline\Pipeline;
 use Engine\Http\ResponseSender;
 use Engine\Http\Router\Exception\RequestNotMatchedException;
 use Engine\Http\Router\RouteCollection;
@@ -22,24 +22,23 @@ $routes->get('home', '/', IndexAction::class);
 $routes->get('signup', '/signup', SignUpAction::class);
 
 $router = new Router($routes);
-$resolver = new MiddlewareResolver();
-$pipeline = new Pipeline();
-$pipeline->pipe($resolver->resolve(BodyParamsMiddleware::class));
+$app    = new Application(new MiddlewareResolver());
+
+$app->pipe(ErrorMiddlewareHandler::class);
+$app->pipe(BodyParamsMiddleware::class);
 
 ### Action
 $request = ServerRequest::fromGlobals();
-
 try {
     $result = $router->match($request);
     foreach ($result->getAttributes() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
 
-    $handler = $result->getHandler();
-    $pipeline->pipe($resolver->resolve($handler));
+    $app->pipe($result->getHandler());
 } catch (RequestNotMatchedException $e) {
 }
-$response = $pipeline($request, new NotFoundHandler());
+$response = $app($request, new NotFoundHandler());
 
 ### Sending
 $emitter = new ResponseSender();
