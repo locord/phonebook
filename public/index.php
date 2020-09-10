@@ -21,7 +21,7 @@ $routes = new RouteCollection();
 $routes->get('home', '/', IndexAction::class);
 $routes->get('signup', '/signup', SignUpAction::class);
 
-$router   = new Router($routes);
+$router = new Router($routes);
 $resolver = new MiddlewareResolver();
 $pipeline = new Pipeline();
 $pipeline->pipe($resolver->resolve(BodyParamsMiddleware::class));
@@ -35,10 +35,16 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
 
-    $handlers = $result->getHandler();
-    foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
-        $pipeline->pipe($resolver->resolve($handler));
+    $handler = $result->getHandler();
+    if (is_array($handler)) {
+        $middleware = new Pipeline();
+        foreach ($handler as $item) {
+            $middleware->pipe($resolver->resolve($item));
+        }
+    } else {
+        $middleware = $resolver->resolve($handler);
     }
+    $pipeline->pipe($middleware);
 } catch (RequestNotMatchedException $e) {
 }
 $response = $pipeline($request, new NotFoundHandler());
