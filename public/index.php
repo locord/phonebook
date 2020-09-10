@@ -2,7 +2,7 @@
 
 use App\Action\IndexAction;
 use App\Action\SignUpAction;
-use Engine\Http\ActionResolver;
+use Engine\Http\MiddlewareResolver;
 use Engine\Http\HtmlResponse;
 use Engine\Http\Middleware\NotFoundHandler;
 use Engine\Http\Pipeline\Pipeline;
@@ -21,7 +21,7 @@ $routes->get('home', '/', IndexAction::class);
 $routes->get('signup', '/signup', SignUpAction::class);
 
 $router = new Router($routes);
-$resolver = new ActionResolver();
+$resolver = new MiddlewareResolver();
 
 ### Action
 $request = ServerRequest::fromGlobals();
