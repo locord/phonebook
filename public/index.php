@@ -22,7 +22,7 @@ $routes->get('home', '/', IndexAction::class);
 $routes->get('signup', '/signup', SignUpAction::class);
 
 $router = new Router($routes);
-$app    = new Application(new MiddlewareResolver());
+$app    = new Application(new MiddlewareResolver(), new NotFoundHandler());
 
 $app->pipe(ErrorMiddlewareHandler::class);
 $app->pipe(BodyParamsMiddleware::class);
@@ -38,7 +38,7 @@ try {
     $app->pipe($result->getHandler());
 } catch (RequestNotMatchedException $e) {
 }
-$response = $app($request, new NotFoundHandler());
+$response = $app->run($request);
 
 ### Sending
 $emitter = new ResponseSender();
