@@ -6,10 +6,7 @@ use App\Action\IndexAction;
 use App\Action\SignUpAction;
 use Engine\Http\Application;
 use Engine\Http\Container\Container;
-use Engine\Http\Middleware\BodyParamsMiddleware;
-use Engine\Http\Middleware\ErrorMiddlewareHandler;
 use Engine\Http\Middleware\NotFoundHandler;
-use Engine\Http\Middleware\RouteMiddleware;
 use Engine\Http\MiddlewareResolver;
 use Engine\Http\Router\RouteCollection;
 use Engine\Http\Router\Router;
@@ -22,9 +19,6 @@ $container->set(Application::class, function (Container $container) {
 });
 $container->set(MiddlewareResolver::class, function (Container $container) {
     return new MiddlewareResolver($container);
-});
-$container->set(RouteMiddleware::class, function (Container $container) {
-    return new RouteMiddleware($container->get(Router::class), $container->get(MiddlewareResolver::class));
 });
 $container->set(Router::class, function (Container $container) {
     // routing
