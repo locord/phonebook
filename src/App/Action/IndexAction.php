@@ -3,7 +3,8 @@
 namespace App\Action;
 
 use Engine\Http\HtmlResponse;
-use Engine\Http\View\ViewRenderer;
+use Engine\Http\View\PhpViewRenderer;
+use Engine\Http\View\ViewInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -13,11 +14,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class IndexAction
 {
     /**
-     * @var ViewRenderer
+     * @var ViewInterface
      */
     private $view;
 
-    public function __construct(ViewRenderer $view)
+    public function __construct(ViewInterface $view)
     {
         $this->view = $view;
     }
@@ -31,7 +32,7 @@ class IndexAction
     {
         $name = $request->getQueryParams()['name'] ?: 'Guest';
 
-        return new HtmlResponse($this->view->render('base', [
+        return new HtmlResponse($this->view->render('app/index', [
             'name' => $name,
         ]));
     }

@@ -6,9 +6,17 @@ namespace Engine\Http\View;
  * Class TemplateRenderer
  * @package Engine\Http\Template
  */
-class ViewRenderer
+class PhpViewRenderer implements ViewInterface
 {
     private $path;
+    /**
+     * @var |null
+     */
+    private $extend;
+    /**
+     * @var array
+     */
+    private $params = [];
 
     public function __construct($path)
     {
@@ -27,7 +35,16 @@ class ViewRenderer
 
         ob_start();
         extract($params, EXTR_OVERWRITE);
+        $this->extend = null;
         require $templateFile;
-        return ob_get_clean();
+        $content = ob_get_clean();
+
+        if (!$this->extend) {
+            return $content;
+        }
+
+        return $this->render($this->extend, [
+            'content' => $content,
+        ]);
     }
 }

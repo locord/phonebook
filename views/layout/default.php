@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+<?php
+/**
+ * @var $content string
+ */
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<title>PhoneBook</title>
+	<title><?= $this->params['title'] ?: '' ?> - PhoneBook</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -46,11 +50,7 @@
 
 <div class="app-content">
 	<main class="container">
-		<ul class="breadcrumb">
-			<li><a href="/" class="active">Home</a></li>
-			<li><a href="#">Profile</a></li>
-		</ul>
-		<h1>Home page</h1>
+        <?= $content ?>
 	</main>
 </div>
 

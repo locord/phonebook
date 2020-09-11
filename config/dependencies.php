@@ -14,7 +14,8 @@ use Engine\Http\Repositories\UserRepository;
 use Engine\Http\Repositories\UserRepositoryInterface;
 use Engine\Http\Router\RouteCollection;
 use Engine\Http\Router\Router;
-use Engine\Http\View\ViewRenderer;
+use Engine\Http\View\PhpViewRenderer;
+use Engine\Http\View\ViewInterface;
 
 $container->set(Application::class, function (Container $container) {
     return new Application(
@@ -39,6 +40,6 @@ $container->set(Router::class, function () {
     $routes->get('signup', '/signup', SignUpAction::class);
     return new Router($routes);
 });
-$container->set(ViewRenderer::class, function () {
-    return new ViewRenderer('views');
+$container->set(ViewInterface::class, function () {
+    return new PhpViewRenderer('views');
 });
