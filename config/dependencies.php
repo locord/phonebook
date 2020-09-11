@@ -14,6 +14,7 @@ use Engine\Http\Repositories\UserRepository;
 use Engine\Http\Repositories\UserRepositoryInterface;
 use Engine\Http\Router\RouteCollection;
 use Engine\Http\Router\Router;
+use Engine\Http\View\ViewRenderer;
 
 $container->set(Application::class, function (Container $container) {
     return new Application(
@@ -31,10 +32,13 @@ $container->set(UserRepositoryInterface::class, function (Container $container) 
 $container->set(MiddlewareResolver::class, function (Container $container) {
     return new MiddlewareResolver($container);
 });
-$container->set(Router::class, function (Container $container) {
+$container->set(Router::class, function () {
     // routing
     $routes = new RouteCollection();
     $routes->get('home', '/', [AuthMiddleware::class, IndexAction::class]);
     $routes->get('signup', '/signup', SignUpAction::class);
     return new Router($routes);
+});
+$container->set(ViewRenderer::class, function () {
+    return new ViewRenderer('views');
 });

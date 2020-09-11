@@ -36,8 +36,11 @@ class AuthMiddleware
     /**
      * @param ServerRequestInterface $request
      * @param callable               $next
+     *
+     * @return mixed
      */
     public function __invoke(ServerRequestInterface $request, callable $next)
     {
+        return $next($request);
     }
 }
