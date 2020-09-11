@@ -4,10 +4,11 @@
 	},
 	"require": {
 		"php": "5.5.38",
+		"ext-PDO": "1.0.4dev",
+		"ext-json": "*",
 		"guzzlehttp/psr7": "^1.6",
 		"psr/http-message": "dev-master",
-		"roave/security-advisories": "dev-master",
-		"ext-json": "*"
+		"roave/security-advisories": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
